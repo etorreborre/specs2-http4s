@@ -2,6 +2,9 @@ ThisBuild / scalaVersion := "2.13.1"
 
 ThisBuild / crossScalaVersions += "2.12.11"
 
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq() // Disable "publish" job generation
+
 val specs2Version = "4.9.4"
 val http4sVersion = "0.21.4"
 
