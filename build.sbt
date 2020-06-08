@@ -18,5 +18,25 @@ lazy val specs2Http4s = (project in file("."))
       "org.specs2" %% "specs2-cats" % specs2Version,
       "org.http4s" %% "http4s-core" % http4sVersion,
       "org.specs2" %% "specs2-core" % specs2Version % Test
-    )
+    ),
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-feature",
+      "-unchecked",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Ywarn-dead-code",
+      "-Ywarn-unused",
+      "-Xlint",
+      "-Xfatal-warnings",
+      "-language:higherKinds"
+    ),
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v <= 12 =>
+          Seq("-Ypartial-unification")
+        case _ =>
+          Nil
+      }
+    }
   )
