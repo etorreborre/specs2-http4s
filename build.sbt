@@ -11,6 +11,7 @@ val http4sVersion = "0.21.4"
 lazy val specs2Http4s = (project in file("."))
   .settings(
     name := "specs2-http4s",
+    description := "specs2 matchers for http4s",
     organization := "org.specs2",
     version := specs2Version,
     libraryDependencies ++= Seq(
@@ -38,5 +39,25 @@ lazy val specs2Http4s = (project in file("."))
         case _ =>
           Nil
       }
-    }
+    },
+    publishSettings
   )
+
+lazy val publishSettings = Seq(
+  homepage := Some(url("https://etorreborre.github.io/specs2/")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/etorreborre/specs2-http4s"),
+      "git@github.com:etorreborre/specs2-http4s.git"
+    )
+  ),
+  licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
+  pomExtra := <developers>
+    <developer>
+      <id>etorreborre</id>
+      <name>Eric Torreborre</name>
+      <url>https://etorreborre.blogspot.com/</url>
+    </developer>
+  </developers>,
+  publishTo := sonatypePublishToBundle.value
+)
