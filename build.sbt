@@ -1,3 +1,5 @@
+import ReleaseTransformations._
+
 ThisBuild / scalaVersion := "2.13.1"
 
 ThisBuild / crossScalaVersions += "2.12.11"
@@ -13,7 +15,6 @@ lazy val specs2Http4s = (project in file("."))
     name := "specs2-http4s",
     description := "specs2 matchers for http4s",
     organization := "org.specs2",
-    version := specs2Version,
     libraryDependencies ++= Seq(
       "org.specs2" %% "specs2-matcher" % specs2Version,
       "org.specs2" %% "specs2-cats" % specs2Version,
@@ -59,5 +60,21 @@ lazy val publishSettings = Seq(
       <url>https://etorreborre.blogspot.com/</url>
     </developer>
   </developers>,
-  publishTo := sonatypePublishToBundle.value
+  publishTo := sonatypePublishToBundle.value,
+  releaseCrossBuild := true,
+  releaseVcsSign := true,
+  releaseProcess := Seq(
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    releaseStepCommandAndRemaining("+publishSigned"),
+    releaseStepCommand("sonatypeBundleRelease"),
+    setNextVersion,
+    commitNextVersion,
+    pushChanges
+  )
 )
