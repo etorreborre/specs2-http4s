@@ -1,3 +1,5 @@
+import ReleaseTransformations._
+
 ThisBuild / scalaVersion := "2.13.1"
 
 ThisBuild / crossScalaVersions += "2.12.11"
@@ -11,8 +13,8 @@ val http4sVersion = "0.21.4"
 lazy val specs2Http4s = (project in file("."))
   .settings(
     name := "specs2-http4s",
+    description := "specs2 matchers for http4s",
     organization := "org.specs2",
-    version := specs2Version,
     libraryDependencies ++= Seq(
       "org.specs2" %% "specs2-matcher" % specs2Version,
       "org.specs2" %% "specs2-cats" % specs2Version,
@@ -38,5 +40,41 @@ lazy val specs2Http4s = (project in file("."))
         case _ =>
           Nil
       }
-    }
+    },
+    publishSettings
   )
+
+lazy val publishSettings = Seq(
+  homepage := Some(url("https://etorreborre.github.io/specs2/")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/etorreborre/specs2-http4s"),
+      "git@github.com:etorreborre/specs2-http4s.git"
+    )
+  ),
+  licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
+  pomExtra := <developers>
+    <developer>
+      <id>etorreborre</id>
+      <name>Eric Torreborre</name>
+      <url>https://etorreborre.blogspot.com/</url>
+    </developer>
+  </developers>,
+  publishTo := sonatypePublishToBundle.value,
+  releaseCrossBuild := true,
+  releaseVcsSign := true,
+  releaseProcess := Seq(
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    releaseStepCommandAndRemaining("+publishSigned"),
+    releaseStepCommand("sonatypeBundleRelease"),
+    setNextVersion,
+    commitNextVersion,
+    pushChanges
+  )
+)
