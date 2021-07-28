@@ -31,19 +31,19 @@ trait Http4sMatchers[F[_]] extends Matchers with RunTimedMatchers[F] {
   def returnHeaders(hs: Headers): Matcher[F[Message[F]]] =
     returnValue(haveHeaders(hs)) ^^ { (m: F[Message[F]]) => m.aka("the returned headers")}
 
-  def containHeader(h: Header): Matcher[Message[F]] =
-    beSome(h.value) ^^ { (m: Message[F]) =>
-      m.headers.get(h.name).map(_.value).aka("the particular header")
+  def containHeader[H](hs: H)(implicit H: Header.Select[H]): Matcher[Message[F]] =
+    beSome(hs) ^^ { (m: Message[F]) =>
+      m.headers.get[H](H).asInstanceOf[Option[H]].aka("the particular header")
     }
 
-  def returnContainingHeader(h: Header): Matcher[F[Message[F]]] =
-    returnValue(containHeader(h)) ^^ { (m: F[Message[F]]) =>
+  def returnContainingHeader[H](hs: H)(implicit H: Header.Select[H]): Matcher[F[Message[F]]] =
+    returnValue(containHeader(hs)) ^^ { (m: F[Message[F]]) =>
       m.aka("the returned particular header")
     }
 
   def haveMediaType(mt: MediaType): Matcher[Message[F]] =
     beSome(mt) ^^ { (m: Message[F]) =>
-      m.headers.get(`Content-Type`).map(_.mediaType).aka("the media type header")
+      m.headers.get[`Content-Type`].map(_.mediaType).aka("the media type header")
     }
 
   def returnMediaType(mt: MediaType): Matcher[F[Message[F]]] =
@@ -53,7 +53,7 @@ trait Http4sMatchers[F[_]] extends Matchers with RunTimedMatchers[F] {
 
   def haveContentCoding(c: ContentCoding): Matcher[Message[F]] =
     beSome(c) ^^ { (m: Message[F]) =>
-      m.headers.get(`Content-Encoding`).map(_.contentCoding).aka("the content encoding header")
+      m.headers.get[`Content-Encoding`].map(_.contentCoding).aka("the content encoding header")
     }
 
   def returnContentCoding(c: ContentCoding): Matcher[F[Message[F]]] =

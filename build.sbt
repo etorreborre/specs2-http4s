@@ -1,14 +1,14 @@
 import ReleaseTransformations._
 
-ThisBuild / scalaVersion := "2.13.1"
+ThisBuild / scalaVersion := "2.13.6"
 
-ThisBuild / crossScalaVersions += "2.12.11"
+ThisBuild / crossScalaVersions += "2.12.14"
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq() // Disable "publish" job generation
 
-val specs2Version = "4.9.4"
-val http4sVersion = "0.21.4"
+val specs2Version = "4.12.2"
+val http4sVersion = "1.0.0-M23"
 
 lazy val specs2Http4s = (project in file("."))
   .settings(
