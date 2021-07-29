@@ -73,7 +73,6 @@ lazy val releaseSettings: Seq[Setting[_]] = Seq(
     )
   ),
   ThisBuild / git.gitTagToVersionNumber := { tag: String => if (tag matches SPECS2_HTTP4S+".*") Some(tag.replace(SPECS2_HTTP4S, "")) else None },
-  ThisBuild / git.useGitDescribe := true,
   ThisBuild / dynverTagPrefix := SPECS2_HTTP4S)
 
-val SPECS2_HTTP4S = "SPECS2-HTTP4S"
+val SPECS2_HTTP4S = "SPECS2-HTTP4S-"
