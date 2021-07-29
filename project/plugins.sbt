@@ -1,4 +1,3 @@
-addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.6.4")
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.2")
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
+// release management
+addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.12.0")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.7")

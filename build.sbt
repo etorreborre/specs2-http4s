@@ -1,17 +1,13 @@
-import ReleaseTransformations._
-
 ThisBuild / scalaVersion := "2.13.6"
 
 ThisBuild / crossScalaVersions += "2.12.14"
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
-ThisBuild / githubWorkflowPublishTargetBranches := Seq() // Disable "publish" job generation
-
 val specs2Version = "4.12.2"
 val http4sVersion = "1.0.0-M23"
 
-lazy val specs2Http4s = (project in file("."))
-  .settings(
+lazy val specs2Http4s = (project in file(".")).
+  enablePlugins(GitBranchPrompt, GitVersioning).
+  settings(
     name := "specs2-http4s",
     description := "specs2 matchers for http4s",
     organization := "org.specs2",
@@ -41,40 +37,43 @@ lazy val specs2Http4s = (project in file("."))
           Nil
       }
     },
-    publishSettings
+    releaseSettings,
   )
 
-lazy val publishSettings = Seq(
-  homepage := Some(url("https://etorreborre.github.io/specs2/")),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/etorreborre/specs2-http4s"),
-      "git@github.com:etorreborre/specs2-http4s.git"
+lazy val releaseSettings: Seq[Setting[_]] = Seq(
+  ThisBuild / versionScheme := Some("early-semver"),
+  ThisBuild / githubWorkflowArtifactUpload := false,
+  ThisBuild / githubWorkflowBuild := Seq(
+    WorkflowStep.Sbt(
+      name = Some("Build and test 🔧"),
+      commands = List("testOnly -- xonly exclude ci timefactor 3"))),
+  ThisBuild / githubWorkflowTargetTags ++= Seq(SPECS2_HTTP4S+"*"),
+  ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag(SPECS2_HTTP4S))),
+  ThisBuild / githubWorkflowPublish := Seq(
+    WorkflowStep.Sbt(
+      name = Some("Release to Sonatype 📇"),
+      commands = List("ci-release"),
+      env = Map(
+        "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
+        "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
+        "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
+        "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
+      )
+    ),
+  ),
+  organization := "org.specs2",
+  homepage := Some(url("https://github.com/etorreborre/specs2-http4s")),
+  licenses := List("MIT" -> url("http://www.apache.org/licenses/MIT")),
+  developers := List(
+    Developer(
+      "etorreborre",
+      "Eric Torreborre",
+      "etorreborre@yahoo.com",
+      url("https://github.com/etorreborre")
     )
   ),
-  licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
-  pomExtra := <developers>
-    <developer>
-      <id>etorreborre</id>
-      <name>Eric Torreborre</name>
-      <url>https://etorreborre.blogspot.com/</url>
-    </developer>
-  </developers>,
-  publishTo := sonatypePublishToBundle.value,
-  releaseCrossBuild := true,
-  releaseVcsSign := true,
-  releaseProcess := Seq(
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommandAndRemaining("+publishSigned"),
-    releaseStepCommand("sonatypeBundleRelease"),
-    setNextVersion,
-    commitNextVersion,
-    pushChanges
-  )
-)
+  ThisBuild / git.gitTagToVersionNumber := { tag: String => if (tag matches SPECS2_HTTP4S+".*") Some(tag.replace(SPECS2_HTTP4S, "")) else None },
+  ThisBuild / git.useGitDescribe := true,
+  ThisBuild / dynverTagPrefix := SPECS2_HTTP4S)
+
+val SPECS2_HTTP4S = "SPECS2-HTTP4S"
