@@ -1,7 +1,7 @@
 
 # specs2-http4s
 
-specs2-http4s is a library of additional [specs2](https://etorreborre.github.io/specs2/) matchers for making test 
+specs2-http4s is a library of additional [specs2](https://etorreborre.github.io/specs2/) matchers for making test
 assertions on [http4s](https://http4s.org/) data types.
 
 ## Usage
@@ -9,14 +9,15 @@ assertions on [http4s](https://http4s.org/) data types.
 Add the library to your project's dependencies in its `build.sbt` file:
 
 ```sbt
-libraryDependencies += "org.specs2" %% "specs2-http4s" % "1.0.0" % "test"
+libraryDependencies += "org.specs2" %% "specs2-http4s" % <latest version> % "test"
 ```
 
 (or equivalent if you are not using sbt)
 
 #### Available versions
 
-* `1.x.x` is compatible with specs2 `4.x.x` and http4s `0.21.x`
+* `1.1.x` is compatible with specs2 `4.x.x` and http4s `1.x`
+* `1.0.x` is compatible with specs2 `4.x.x` and http4s `0.21.x`
 
 #### Example usage
 
@@ -66,4 +67,3 @@ class Http4sExamples extends Specification with Http4sMatchers[IO] with IOMatche
   }
 }
 ```
-
